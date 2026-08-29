@@ -1,0 +1,33 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+
+# Terraform / OpenTofu
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+
+# Ansible
+*.retry
+
+# Secrets
+*.secret
+*.secrets
+*.key
+*.pem
+.env
+.env.*
+!.env.example
+
+# SOPS / age
+*.agekey
+
+# Temporary files
+*.tmp
+*.swp
