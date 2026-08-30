@@ -42,9 +42,25 @@ else
     echo "OpenTofu already installed: $(tofu version | head -n 1)"
 fi
 
+echo "==> Installing SOPS"
+if ! command -v sops >/dev/null 2>&1; then
+    SOPS_VERSION="$(curl -fsSL https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name')"
+
+    curl -fsSL \
+        "https://github.com/getsops/sops/releases/download/${SOPS_VERSION}/sops-${SOPS_VERSION}.linux.amd64" \
+        -o /tmp/sops
+
+    sudo install -m 0755 /tmp/sops /usr/local/bin/sops
+
+    rm -f /tmp/sops
+else
+    echo "SOPS already installed: $(sops --version | head -n 1)"
+fi
+
 echo
 echo "==> Bootstrap complete"
 echo
+
 echo "Git:"
 git --version
 
@@ -55,6 +71,10 @@ ansible --version | head -n 1
 echo
 echo "OpenTofu:"
 tofu version | head -n 1
+
+echo
+echo "SOPS:"
+sops --version | head -n 1
 
 echo
 echo "age:"
