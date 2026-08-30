@@ -1,0 +1,17 @@
+---
+- name: Inspect workstation
+  hosts: workstation
+  gather_facts: true
+
+  tasks:
+    - name: Display operating system
+      ansible.builtin.debug:
+        msg: "{{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_version'] }}"
+
+    - name: Display architecture
+      ansible.builtin.debug:
+        msg: "{{ ansible_facts['architecture'] }}"
+
+    - name: Display hostname
+      ansible.builtin.debug:
+        msg: "{{ ansible_facts['hostname'] }}"
