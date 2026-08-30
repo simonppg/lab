@@ -1,5 +1,4 @@
 ---
 workstation_packages:
   - curl
-  - git
   - jq
