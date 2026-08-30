@@ -35,3 +35,9 @@ crash.*.log
 # Temporary files
 *.tmp
 *.swp
+
+secrets/*
+!secrets/*.sops.yaml
+!secrets/*.sops.yml
+!secrets/*.sops.json
+!secrets/*.sops.env
