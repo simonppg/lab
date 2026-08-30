@@ -1,3 +1,7 @@
+# SOPS / age private keys
+keys.txt
+*.agekey
+
 # OS files
 .DS_Store
 Thumbs.db
