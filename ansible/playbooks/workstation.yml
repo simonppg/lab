@@ -1,5 +1,5 @@
 ---
-- name: Inspect workstation
+- name: Configure workstation
   hosts: workstation
   gather_facts: true
 
@@ -15,3 +15,10 @@
     - name: Display hostname
       ansible.builtin.debug:
         msg: "{{ ansible_facts['hostname'] }}"
+
+    - name: Ensure curl is installed
+      become: true
+      ansible.builtin.apt:
+        name: curl
+        state: present
+        update_cache: true
