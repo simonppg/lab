@@ -16,9 +16,9 @@
       ansible.builtin.debug:
         msg: "{{ ansible_facts['hostname'] }}"
 
-    - name: Ensure curl is installed
+    - name: Ensure workstation packages are installed
       become: true
       ansible.builtin.apt:
-        name: curl
+        name: "{{ workstation_packages }}"
         state: present
         update_cache: true
