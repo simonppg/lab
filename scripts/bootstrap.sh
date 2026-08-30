@@ -2,21 +2,22 @@
 
 set -euo pipefail
 
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd)"
+
+cd "$REPO_ROOT"
+
 echo "==> Updating package lists"
 sudo apt update
 
-echo "==> Installing base packages"
+echo "==> Installing bootstrap dependencies"
 sudo apt install -y \
     curl \
-    wget \
     gnupg \
-    git \
     age \
     python3 \
     python3-venv \
-    pipx \
     jq \
-    unzip \
     software-properties-common
 
 echo "==> Installing Ansible"
@@ -34,7 +35,6 @@ if ! command -v tofu >/dev/null 2>&1; then
         -o /tmp/install-opentofu.sh
 
     chmod +x /tmp/install-opentofu.sh
-
     sudo /tmp/install-opentofu.sh --install-method deb
 
     rm -f /tmp/install-opentofu.sh
@@ -58,13 +58,9 @@ else
 fi
 
 echo
-echo "==> Bootstrap complete"
+echo "==> Bootstrap tools ready"
 echo
 
-echo "Git:"
-git --version
-
-echo
 echo "Ansible:"
 ansible --version | head -n 1
 
@@ -79,3 +75,9 @@ sops --version | head -n 1
 echo
 echo "age:"
 age --version
+
+echo
+echo "==> Bootstrap complete"
+echo
+echo "Next step:"
+echo "    ansible-playbook -i ansible/inventory/hosts.yml ansible/playbooks/workstation.yml"
