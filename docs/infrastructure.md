@@ -103,3 +103,32 @@ OptiPlex
     ├── Jellyfin
     └── K3s VM
         └── Kubernetes workloads
+```
+
+## K3s VM
+
+K3s will run in a virtual machine hosted by TrueNAS on the OptiPlex 7050.
+
+The initial VM specification is:
+
+- OS: Debian 13 (Trixie)
+- Architecture: x86_64
+- vCPU: 4
+- Memory: 6 GiB
+- Disk: 40 GiB
+- IP address: `192.168.1.233`
+- DNS name: `k3s.home.arpa`
+
+The VM will use the LAN through the TrueNAS virtual networking configuration.
+
+The VM disk will be stored on a dedicated location within `MyPool`, separate from the media dataset.
+
+### K3s VM Resource Rationale
+
+The VM is intentionally sized conservatively because the OptiPlex has 16 GiB of physical memory and also runs TrueNAS and Jellyfin.
+
+The initial allocation of 4 vCPUs and 6 GiB of RAM leaves resources available for TrueNAS and its existing services.
+
+The 40 GiB VM disk is intended for the operating system and Kubernetes infrastructure only. Media will remain on TrueNAS storage and will not be stored inside the VM disk.
+
+The VM resources can be increased later if required.
