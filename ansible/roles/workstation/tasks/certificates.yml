@@ -54,6 +54,15 @@
     subject_alt_name:
       - "DNS:truenas.home.arpa"
       - "IP:192.168.1.232"
+    basic_constraints:
+      - "CA:FALSE"
+    basic_constraints_critical: true
+    key_usage:
+      - digitalSignature
+      - keyEncipherment
+    key_usage_critical: true
+    extended_key_usage:
+      - serverAuth
 
 - name: Sign TrueNAS certificate with Homelab CA
   community.crypto.x509_certificate:
