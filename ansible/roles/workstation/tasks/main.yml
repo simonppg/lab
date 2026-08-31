@@ -1,8 +1,48 @@
 ---
+- name: Remove old OpenTofu repository
+  become: true
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/opentofu.sources
+    state: absent
+
 - name: Ensure workstation packages are installed
   become: true
   ansible.builtin.apt:
     name: "{{ workstation_packages }}"
+    state: present
+    update_cache: true
+
+- name: Add OpenTofu repository keys
+  become: true
+  ansible.builtin.get_url:
+    url: "{{ item.url }}"
+    dest: "{{ item.dest }}"
+    mode: "0644"
+  loop:
+    - url: https://get.opentofu.org/opentofu.gpg
+      dest: /etc/apt/keyrings/opentofu.gpg
+    - url: https://packages.opentofu.org/opentofu/tofu/gpgkey
+      dest: /etc/apt/keyrings/opentofu-repo.gpg
+
+- name: Add OpenTofu repository
+  become: true
+  ansible.builtin.deb822_repository:
+    name: opentofu
+    types:
+      - deb
+    uris:
+      - https://packages.opentofu.org/opentofu/tofu/any/
+    suites:
+      - any
+    components:
+      - main
+    signed_by: /etc/apt/keyrings/opentofu-repo.gpg
+    state: present
+
+- name: Install OpenTofu
+  become: true
+  ansible.builtin.apt:
+    name: tofu
     state: present
     update_cache: true
 
