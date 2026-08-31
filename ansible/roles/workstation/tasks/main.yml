@@ -87,3 +87,7 @@
     dest: /usr/local/bin/helm
     mode: "0755"
     remote_src: true
+
+- name: Configure certificates
+  ansible.builtin.include_tasks:
+    file: certificates.yml

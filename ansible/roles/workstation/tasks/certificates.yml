@@ -1,0 +1,65 @@
+---
+- name: Ensure certificate directories exist
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    mode: "{{ item.mode }}"
+  loop:
+    - path: "{{ playbook_dir }}/../../certificates"
+      mode: "0755"
+    - path: "{{ playbook_dir }}/../../certificates/private"
+      mode: "0700"
+
+- name: Generate Homelab CA private key
+  community.crypto.openssl_privatekey:
+    path: "{{ playbook_dir }}/../../certificates/private/homelab-ca.key"
+    size: 4096
+    type: RSA
+    mode: "0600"
+
+- name: Generate Homelab CA certificate
+  community.crypto.openssl_csr:
+    path: "{{ playbook_dir }}/../../certificates/private/homelab-ca.csr"
+    privatekey_path: "{{ playbook_dir }}/../../certificates/private/homelab-ca.key"
+    common_name: "Home Lab Root CA"
+    basic_constraints:
+      - "CA:TRUE"
+    basic_constraints_critical: true
+    key_usage:
+      - keyCertSign
+      - cRLSign
+    key_usage_critical: true
+  register: homelab_ca_csr
+
+- name: Sign Homelab CA certificate
+  community.crypto.x509_certificate:
+    path: "{{ playbook_dir }}/../../certificates/homelab-ca.crt"
+    csr_path: "{{ playbook_dir }}/../../certificates/private/homelab-ca.csr"
+    privatekey_path: "{{ playbook_dir }}/../../certificates/private/homelab-ca.key"
+    provider: selfsigned
+    selfsigned_not_after: "+3650d"
+
+- name: Generate TrueNAS private key
+  community.crypto.openssl_privatekey:
+    path: "{{ playbook_dir }}/../../certificates/private/truenas.key"
+    size: 2048
+    type: RSA
+    mode: "0600"
+
+- name: Generate TrueNAS certificate signing request
+  community.crypto.openssl_csr:
+    path: "{{ playbook_dir }}/../../certificates/private/truenas.csr"
+    privatekey_path: "{{ playbook_dir }}/../../certificates/private/truenas.key"
+    common_name: "truenas.home.arpa"
+    subject_alt_name:
+      - "DNS:truenas.home.arpa"
+      - "IP:192.168.1.232"
+
+- name: Sign TrueNAS certificate with Homelab CA
+  community.crypto.x509_certificate:
+    path: "{{ playbook_dir }}/../../certificates/truenas.crt"
+    csr_path: "{{ playbook_dir }}/../../certificates/private/truenas.csr"
+    provider: ownca
+    ownca_path: "{{ playbook_dir }}/../../certificates/homelab-ca.crt"
+    ownca_privatekey_path: "{{ playbook_dir }}/../../certificates/private/homelab-ca.key"
+    ownca_not_after: "+825d"
