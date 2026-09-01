@@ -11,3 +11,8 @@ variable "truenas_username" {
   type      = string
   sensitive = true
 }
+
+variable "cinefilo_password" {
+  type      = string
+  sensitive = true
+}

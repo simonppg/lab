@@ -54,6 +54,10 @@ export TF_VAR_truenas_api_key="$(
   sops -d --extract '["api_key"]' ../secrets/truenas.sops.yaml
 )"
 
+export TF_VAR_cinefilo_password="$(
+  sops -d --extract '["cinefilo_password"]' ../secrets/truenas.sops.yaml
+)"
+
 OpenTofu automatically uses TF_VAR_* for matching variables.
 
 Provider:
