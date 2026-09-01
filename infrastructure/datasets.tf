@@ -25,3 +25,8 @@ resource "truenas_dataset" "mymedia" {
   pool = truenas_pool.mypool.name
   name = "MyMedia"
 }
+
+resource "truenas_dataset" "mystorage" {
+  name = "MyStorage"
+  pool = truenas_pool.mypool.name
+}
