@@ -1,0 +1,37 @@
+---
+- name: Read current Pi-hole DNS hosts
+  ansible.builtin.command:
+    cmd: pihole-FTL --config dns.hosts
+  become: true
+  register: pihole_dns_hosts_current
+  changed_when: false
+
+- name: Build desired Pi-hole DNS hosts
+  ansible.builtin.set_fact:
+    pihole_dns_hosts_desired: >-
+      {{
+        pihole_dns_hosts
+        | map(attribute='address')
+        | zip(pihole_dns_hosts | map(attribute='hostname'))
+        | map('join', ' ')
+        | list
+      }}
+
+- name: Normalize current Pi-hole DNS hosts
+  ansible.builtin.set_fact:
+    pihole_dns_hosts_current_normalized: >-
+      {{
+        pihole_dns_hosts_current.stdout[2:-2]
+        | split(', ')
+        | sort
+      }}
+
+- name: Configure Pi-hole DNS hosts
+  ansible.builtin.command:
+    argv:
+      - pihole-FTL
+      - --config
+      - dns.hosts
+      - "{{ pihole_dns_hosts_desired | to_json }}"
+  become: true
+  when: pihole_dns_hosts_current_normalized != (pihole_dns_hosts_desired | sort)

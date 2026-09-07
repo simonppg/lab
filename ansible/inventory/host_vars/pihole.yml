@@ -1,0 +1,15 @@
+pihole_ip: "{{ lookup('ansible.builtin.env', 'TF_VAR_pihole_ip') }}"
+truenas_ip: "{{ lookup('ansible.builtin.env', 'TF_VAR_truenas_ip') }}"
+
+pihole_dns_hosts:
+  - hostname: homelab.home.arpa
+    address: "{{ truenas_ip }}"
+
+  - hostname: jellyfin.home.arpa
+    address: "{{ truenas_ip }}"
+
+  - hostname: pihole.home.arpa
+    address: "{{ pihole_ip }}"
+
+  - hostname: truenas.home.arpa
+    address: "{{ truenas_ip }}"
