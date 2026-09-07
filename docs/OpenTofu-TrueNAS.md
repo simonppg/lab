@@ -46,19 +46,9 @@ username: ENC[...]
 
 Export the values for OpenTofu:
 
-export TF_VAR_truenas_url="https://truenas.home.arpa"
-
-export TF_VAR_truenas_username="$(
-  sops -d --extract '["username"]' ../secrets/truenas.sops.yaml
-)"
-
-export TF_VAR_truenas_api_key="$(
-  sops -d --extract '["api_key"]' ../secrets/truenas.sops.yaml
-)"
-
-export TF_VAR_cinefilo_password="$(
-  sops -d --extract '["cinefilo_password"]' ../secrets/truenas.sops.yaml
-)"
+```shell
+source scripts/load-secrets.sh
+```
 
 OpenTofu automatically uses TF_VAR_* for matching variables.
 
