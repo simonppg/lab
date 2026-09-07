@@ -13,3 +13,7 @@ pihole_dns_hosts:
 
   - hostname: truenas.home.arpa
     address: "{{ truenas_ip }}"
+
+pihole_dns_upstreams:
+  - 8.8.8.8
+  - 8.8.4.4

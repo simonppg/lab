@@ -35,3 +35,40 @@
       - "{{ pihole_dns_hosts_desired | to_json }}"
   become: true
   when: pihole_dns_hosts_current_normalized != (pihole_dns_hosts_desired | sort)
+
+- name: Read current Pi-hole DNS upstreams
+  ansible.builtin.command:
+    cmd: pihole-FTL --config dns.upstreams
+  become: true
+  register: pihole_dns_upstreams_current
+  changed_when: false
+
+- name: Build desired Pi-hole DNS upstreams
+  ansible.builtin.set_fact:
+    pihole_dns_upstreams_desired: "{{ pihole_dns_upstreams | sort }}"
+
+- name: Normalize current Pi-hole DNS upstreams
+  ansible.builtin.set_fact:
+    pihole_dns_upstreams_current_normalized: >-
+      {{
+        pihole_dns_upstreams_current.stdout[2:-2]
+        | split(', ')
+        | sort
+      }}
+
+- name: Compare Pi-hole DNS upstreams
+  ansible.builtin.debug:
+    msg:
+      - "Current: {{ pihole_dns_upstreams_current_normalized }}"
+      - "Desired: {{ pihole_dns_upstreams_desired }}"
+      - "Different: {{ pihole_dns_upstreams_current_normalized != pihole_dns_upstreams_desired }}"
+
+- name: Configure Pi-hole DNS upstreams
+  ansible.builtin.command:
+    argv:
+      - pihole-FTL
+      - --config
+      - dns.upstreams
+      - "{{ pihole_dns_upstreams_desired | to_json }}"
+  become: true
+  when: pihole_dns_upstreams_current_normalized != pihole_dns_upstreams_desired
