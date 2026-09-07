@@ -27,6 +27,9 @@ export TF_VAR_bbb_password="$(
 export TF_VAR_pihole_ip="$(
   sops -d --extract '["pihole_ip"]' "$SECRETS_DIR/bbb.sops.yaml"
 )"
+export TF_VAR_pihole_api_password="$(
+  sops -d --extract '["pihole_api_password"]' "$SECRETS_DIR/bbb.sops.yaml"
+)"
 
 echo "Environment loaded."
 

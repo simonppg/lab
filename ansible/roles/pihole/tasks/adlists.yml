@@ -1,0 +1,59 @@
+---
+- name: Authenticate with Pi-hole API
+  ansible.builtin.uri:
+    url: "http://{{ pihole_ip }}/api/auth"
+    method: POST
+    body_format: json
+    body:
+      password: "{{ api_password }}"
+    return_content: true
+    status_code: 200
+  register: pihole_api_auth
+  no_log: true
+  check_mode: false
+
+- name: Read current Pi-hole adlists
+  ansible.builtin.uri:
+    url: "http://{{ pihole_ip }}/api/lists"
+    method: GET
+    headers:
+      X-FTL-SID: "{{ pihole_api_auth.json.session.sid }}"
+    return_content: true
+    status_code: 200
+  register: pihole_adlists_current
+  no_log: true
+  check_mode: false
+
+- name: Parse current Pi-hole adlists
+  ansible.builtin.set_fact:
+    pihole_adlists_current_parsed: >-
+      {{
+        pihole_adlists_current.json.lists
+        | map(attribute='address')
+        | list
+      }}
+
+- name: Build desired Pi-hole adlists
+  ansible.builtin.set_fact:
+    pihole_adlists_desired_parsed: "{{ pihole_adlists | list }}"
+
+- name: Show Pi-hole adlist changes
+  ansible.builtin.debug:
+    msg:
+      - "Current: {{ pihole_adlists_current_parsed }}"
+      - "Desired: {{ pihole_adlists_desired_parsed }}"
+      - "Missing: {{ pihole_adlists_desired_parsed | difference(pihole_adlists_current_parsed) }}"
+
+- name: Add missing Pi-hole blocklists
+  ansible.builtin.uri:
+    url: "http://{{ pihole_ip }}/api/lists?type=block"
+    method: POST
+    headers:
+      X-FTL-SID: "{{ pihole_api_auth.json.session.sid }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      address: "{{ item }}"
+    status_code: 201
+  no_log: true
+  loop: "{{ pihole_adlists_desired_parsed | difference(pihole_adlists_current_parsed) }}"

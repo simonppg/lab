@@ -1,5 +1,6 @@
 pihole_ip: "{{ lookup('ansible.builtin.env', 'TF_VAR_pihole_ip') }}"
 truenas_ip: "{{ lookup('ansible.builtin.env', 'TF_VAR_truenas_ip') }}"
+api_password: "{{ lookup('ansible.builtin.env', 'TF_VAR_pihole_api_password') }}"
 
 pihole_dns_hosts:
   - hostname: homelab.home.arpa
@@ -17,3 +18,6 @@ pihole_dns_hosts:
 pihole_dns_upstreams:
   - 8.8.8.8
   - 8.8.4.4
+
+pihole_adlists:
+  - https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts

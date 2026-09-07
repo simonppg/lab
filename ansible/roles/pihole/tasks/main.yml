@@ -1,3 +1,6 @@
 ---
 - name: Configure Pi-hole DNS
   ansible.builtin.include_tasks: dns.yml
+
+- name: Configure Pi-hole adlists
+  ansible.builtin.include_tasks: adlists.yml
