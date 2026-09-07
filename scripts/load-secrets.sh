@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
-
-SECRETS_DIR="../secrets"
+SECRETS_DIR="secrets"
 
 # TrueNAS
 export TF_VAR_truenas_url="https://truenas.home.arpa"
@@ -31,3 +29,6 @@ export TF_VAR_pihole_ip="$(
 )"
 
 echo "Environment loaded."
+
+# Validate that all expected variables are set
+env | grep '^TF_VAR_' | sed 's/=.*$/=<set>/'
