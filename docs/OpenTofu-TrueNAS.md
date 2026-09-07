@@ -4,8 +4,10 @@
 
 Generate the TrueNAS certificate with Ansible:
 
+```
 CN:  truenas.home.arpa
-SAN: DNS:truenas.home.arpa, IP:192.168.1.232
+SAN: DNS:truenas.home.arpa, IP:`$TF_VAR_truenas_ip`
+```
 
 Import `truenas.crt` + its private key into the TrueNAS GUI and select it as the GUI SSL certificate.
 

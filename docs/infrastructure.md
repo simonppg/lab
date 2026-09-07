@@ -5,8 +5,8 @@
 | Component | Address | Role |
 |---|---|---|
 | TP-Link Archer BE3500 | `192.168.1.1` | Router / DHCP |
-| BeagleBone Black | `192.168.1.2` | Pi-hole / primary DNS |
-| OptiPlex 7050 | `192.168.1.232` | TrueNAS / storage |
+| BeagleBone Black | `$TF_VAR_pihole_ip` | Pi-hole / primary DNS |
+| OptiPlex 7050 | `$TF_VAR_truenas_ip` | TrueNAS / storage |
 
 The LAN uses `192.168.1.0/24`.
 
@@ -17,7 +17,7 @@ The Cox modem operates in bridge mode and is outside the homelab automation scop
 ## BeagleBone Black
 
 - Hostname: `BeagleBone`
-- Address: `192.168.1.2`
+- Address: `$TF_VAR_pihole_ip`
 - OS: Debian 12 (Bookworm)
 - Architecture: ARMv7 (`armv7l`)
 - Memory: 512 MiB
@@ -33,15 +33,15 @@ Pi-hole currently uses Google DNS (`8.8.8.8` and `8.8.4.4`) as its upstream DNS 
 
 Local DNS records currently include:
 
-- `pihole.home.arpa` → `192.168.1.2`
-- `truenas.home.arpa` → `192.168.1.232`
-- `jellyfin.home.arpa` → `192.168.1.232`
-- `homelab.home.arpa` → `192.168.1.232`
+- `pihole.home.arpa` → `$TF_VAR_pihole_ip`
+- `truenas.home.arpa` → `$TF_VAR_truenas_ip`
+- `jellyfin.home.arpa` → `$TF_VAR_truenas_ip`
+- `homelab.home.arpa` → `$TF_VAR_truenas_ip`
 
 ## OptiPlex 7050
 
 - Hostname: `truenas`
-- Address: `192.168.1.232`
+- Address: `$TF_VAR_truenas_ip`
 - OS: TrueNAS `25.10.6`
 - CPU: Intel Core i7-7700
 - CPU: 4 cores / 8 threads

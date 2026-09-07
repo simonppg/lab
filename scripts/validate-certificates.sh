@@ -2,6 +2,12 @@
 
 set -Eeuo pipefail
 
+if [[ -z "${TF_VAR_truenas_ip:-}" ]]; then
+    echo "ERROR: TF_VAR_truenas_ip is not set"
+    echo "Run: source ./scripts/load-secrets.sh"
+    exit 1
+fi
+
 CERT_DIR="$(cd "$(dirname "$0")/../certificates" && pwd)"
 
 CA_CERT="$CERT_DIR/homelab-ca.crt"
@@ -91,12 +97,12 @@ fi
 
 echo " OK: DNS:truenas.home.arpa"
 
-if ! grep -Fq "IP Address:192.168.1.232" "$SAN_FILE"; then
-    echo "ERROR: missing IP SAN: 192.168.1.232"
+if ! grep -Fq "IP Address:$TF_VAR_truenas_ip" "$SAN_FILE"; then
+    echo "ERROR: missing IP SAN: $TF_VAR_truenas_ip"
     exit 1
 fi
 
-echo " OK: IP Address:192.168.1.232"
+echo " OK: IP Address:$TF_VAR_truenas_ip"
 
 echo
 echo "Certificate validation successful."
